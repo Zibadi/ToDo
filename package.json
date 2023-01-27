@@ -1,0 +1,14 @@
+{
+  "name": "todo",
+  "version": "1.0.0",
+  "description": "ToDo List App",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Mohammad Zibadi",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^22.0.3"
+  }
+}
