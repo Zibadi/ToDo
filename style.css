@@ -15,6 +15,15 @@ body {
   letter-spacing: 0.03rem;
 }
 
+img {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0px;
+  z-index: -1;
+  filter: blur(10px);
+}
+
 .header {
   display: flex;
   justify-content: center;
@@ -51,7 +60,7 @@ h2 {
 }
 
 .done-btn {
-  background-color: #222222;
+  background: none;
   border: dashed 0.15rem #eeeeee;
   cursor: pointer;
   width: 20px;
@@ -72,11 +81,12 @@ h2 {
 }
 
 input {
-  background: #222222;
+  background: none;
   color: #eeeeee;
   display: block;
-  padding: 8px;
-  border: dashed 0.15rem #eeeeee;
+  padding: 10px;
+  border: none;
+  border-bottom: dashed 0.15rem #eeeeee;
 }
 
 ::placeholder {
