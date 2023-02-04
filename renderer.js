@@ -2,16 +2,16 @@ let taskCount = 0;
 
 const updateIds = () => {
   const tasks = document.querySelectorAll(".task");
-  const tasksSpan = document.querySelectorAll(".task > h2 > span");
-  const tasksButtons = document.querySelectorAll(".task > button");
+  const tasksId = document.querySelectorAll(".task > div > .task-id");
+  const tasksButtons = document.querySelectorAll(".task > div > button");
 
   console.log(tasks);
-  console.log(tasksSpan);
+  console.log(tasksId);
   console.log(tasksButtons);
 
   for (let i = 0; i < tasks.length; i++) {
     tasks[i].setAttribute("id", i + 1);
-    tasksSpan[i].innerHTML = i + 1;
+    tasksId[i].innerHTML = `${i + 1}.`;
     tasksButtons[i].setAttribute("onclick", `removeTask(${i + 1})`);
   }
 
@@ -48,8 +48,13 @@ window.addEventListener("DOMContentLoaded", () => {
 
     content.innerHTML += `
       <div id="${taskCount}" class="task">
-        <h2><span>${taskCount}</span>. ${task}</h2>
-        <button class="done-btn" onclick="removeTask(${taskCount})"></button>
+        <div class="task-title">
+          <h2 class="task-id">${taskCount}.</h2>
+          <h2>${task}</h2>
+        </div>
+        <div>
+          <button class="done-btn" onclick="removeTask(${taskCount})"></button>
+        </div>
       </div>`;
 
     ipcRenderer.send("write", content.innerHTML);
