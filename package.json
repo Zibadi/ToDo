@@ -1,7 +1,7 @@
 {
   "name": "todo",
   "version": "1.0.0",
-  "description": "GUI ToDo-List Application",
+  "description": "A small, fast and modern ToDo-List application which is written with Electron.js for Windows and Linux.",
   "main": "main.js",
   "scripts": {
     "start": "electron-forge start",
