@@ -17,23 +17,30 @@ const removeAnimation = (id) => {
   const tasks = document.querySelectorAll(".task");
   for (let i = id - 1; i < tasks.length; i++) {
     tasks[i].classList.add("animate-bottom");
+
+    tasks[i].addEventListener(
+      "animationend",
+      () => {
+        tasks[i].classList.remove("animate-bottom");
+      },
+      { once: true }
+    );
   }
-  setTimeout(() => {
-    for (let i = id - 1; i < tasks.length; i++) {
-      tasks[i].classList.remove("animate-bottom");
-    }
-  }, 100);
+};
+
+const saveTasks = () => {
+  const content = document.querySelector(".content");
+  ipcRenderer.send("write", content.innerHTML);
+  console.log("Overwrite request is sent.");
 };
 
 const removeTask = (id) => {
   const task = document.getElementById(id);
   task.remove();
   updateIds(id);
-  const content = document.querySelector(".content");
-  ipcRenderer.send("write", content.innerHTML);
-  console.log("Overwrite request is sent.");
-  taskCount--;
+  saveTasks();
   removeAnimation(id);
+  taskCount--;
 };
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -58,7 +65,7 @@ window.addEventListener("DOMContentLoaded", () => {
       <div id="${taskCount}" class="task">
         <div class="task-title">
           <h2 class="task-id">${taskCount}.</h2>
-          <h2>${task}</h2>
+          <h2 class="task-name" contenteditable onblur="saveTasks()">${task}</h2>
         </div>
         <div>
           <button class="done-btn" onclick="removeTask(${taskCount})"></button>
@@ -70,8 +77,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
     const animatedTask = document.getElementById(taskCount);
     animatedTask.classList.add("animate-bottom-show");
-    setTimeout(() => {
-      animatedTask.classList.remove("animate-bottom-show");
-    }, 100);
+    animatedTask.addEventListener(
+      "animationend",
+      () => {
+        animatedTask.classList.remove("animate-bottom-show");
+      },
+      { once: true }
+    );
   });
 });

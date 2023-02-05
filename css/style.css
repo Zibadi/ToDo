@@ -80,6 +80,10 @@ h2 {
   margin-right: 8px;
 }
 
+.task-name {
+  cursor: pointer;
+}
+
 .done-btn {
   background: none;
   border: dashed 0.15rem #eeeeee;
