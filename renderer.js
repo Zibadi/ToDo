@@ -56,7 +56,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-
     taskCount++;
     const task = input.value;
     input.value = "";
@@ -74,6 +73,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
     ipcRenderer.send("write", content.innerHTML);
     console.log("Add request is sent.");
+
+    window.scrollBy(0, 500);
 
     const animatedTask = document.getElementById(taskCount);
     animatedTask.classList.add("animate-bottom-show");

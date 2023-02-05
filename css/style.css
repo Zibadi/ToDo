@@ -58,6 +58,7 @@ h1 {
 
 .content {
   margin: 0px 20px;
+  min-height: 410px;
 }
 
 .task {
@@ -101,8 +102,8 @@ h2 {
 .task-input {
   display: flex;
   justify-content: center;
-  margin-top: 32px;
-  margin-bottom: 48px;
+  margin-top: 16px;
+  margin-bottom: 32px;
 }
 
 input {
