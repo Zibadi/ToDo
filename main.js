@@ -1,22 +1,30 @@
-const { app, BrowserWindow, ipcMain, webContents } = require("electron");
+const { app, BrowserWindow, ipcMain, Menu } = require("electron");
 const path = require("path");
 const fs = require("fs");
 
+Menu.setApplicationMenu(null);
+
 function createWindow() {
   const win = new BrowserWindow({
-    autoHideMenuBar: true,
-    width: 800,
+    show: false,
+    backgroundColor: "#222222",
+    // autoHideMenuBar: true,
+    width: 400,
     height: 600,
-    minWidth: 800,
+    minWidth: 400,
     minHeight: 600,
-    maxWidth: 800,
+    maxWidth: 600,
     maxHeight: 800,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
   });
 
-  win.webContents.openDevTools();
+  win.once("ready-to-show", () => {
+    win.show();
+  });
+
+  // win.webContents.openDevTools();
 
   win.loadFile("index.html");
 

@@ -1,7 +1,7 @@
 {
   "name": "todo",
   "version": "1.0.0",
-  "description": "ToDo List App",
+  "description": "GUI ToDo-List Application",
   "main": "main.js",
   "scripts": {
     "start": "electron-forge start",
