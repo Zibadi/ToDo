@@ -1,31 +1,39 @@
 let taskCount = 0;
 
-const updateIds = () => {
+const updateIds = (id) => {
   const tasks = document.querySelectorAll(".task");
   const tasksId = document.querySelectorAll(".task > div > .task-id");
   const tasksButtons = document.querySelectorAll(".task > div > button");
 
-  console.log(tasks);
-  console.log(tasksId);
-  console.log(tasksButtons);
-
-  for (let i = 0; i < tasks.length; i++) {
+  for (let i = id - 1; i < tasks.length; i++) {
     tasks[i].setAttribute("id", i + 1);
     tasksId[i].innerHTML = `${i + 1}.`;
     tasksButtons[i].setAttribute("onclick", `removeTask(${i + 1})`);
   }
+  console.log("Tasks Ids get updated.");
+};
 
-  console.log("Task Ids get updated.");
+const removeAnimation = (id) => {
+  const tasks = document.querySelectorAll(".task");
+  for (let i = id - 1; i < tasks.length; i++) {
+    tasks[i].classList.add("animate-bottom");
+  }
+  setTimeout(() => {
+    for (let i = id - 1; i < tasks.length; i++) {
+      tasks[i].classList.remove("animate-bottom");
+    }
+  }, 100);
 };
 
 const removeTask = (id) => {
   const task = document.getElementById(id);
   task.remove();
-  updateIds();
+  updateIds(id);
   const content = document.querySelector(".content");
   ipcRenderer.send("write", content.innerHTML);
-  console.log("Add req is sent.");
+  console.log("Overwrite request is sent.");
   taskCount--;
+  removeAnimation(id);
 };
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -58,6 +66,12 @@ window.addEventListener("DOMContentLoaded", () => {
       </div>`;
 
     ipcRenderer.send("write", content.innerHTML);
-    console.log("Add req is sent.");
+    console.log("Add request is sent.");
+
+    const animatedTask = document.getElementById(taskCount);
+    animatedTask.classList.add("animate-bottom-show");
+    setTimeout(() => {
+      animatedTask.classList.remove("animate-bottom-show");
+    }, 100);
   });
 });

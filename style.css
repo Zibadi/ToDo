@@ -116,3 +116,31 @@ input {
   font-size: 0.8rem;
   text-align: center;
 }
+
+.animate-bottom {
+  position: relative;
+  animation: animateBottom 0.1s;
+}
+@keyframes animateBottom {
+  from {
+    bottom: -50px;
+  }
+  to {
+    bottom: 0;
+  }
+}
+
+.animate-bottom-show {
+  position: relative;
+  animation: animateBottomShow 0.1s;
+}
+@keyframes animateBottomShow {
+  from {
+    bottom: -50px;
+    opacity: 0;
+  }
+  to {
+    bottom: 0;
+    opacity: 1;
+  }
+}
