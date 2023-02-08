@@ -56,7 +56,7 @@ h1 {
   font-weight: normal;
 }
 
-.content {
+#content {
   margin: 0px 20px;
   min-height: 410px;
 }
@@ -120,6 +120,19 @@ input {
   letter-spacing: 0.07rem;
   font-size: 0.8rem;
   text-align: center;
+}
+
+.animate-top {
+  position: relative;
+  animation: animateTop 0.1s;
+}
+@keyframes animateTop {
+  from {
+    top: -50px;
+  }
+  to {
+    top: 0;
+  }
 }
 
 .animate-bottom {

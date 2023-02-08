@@ -1,23 +1,54 @@
 let taskCount = 0;
 
-const updateIds = (id) => {
-  const tasks = document.querySelectorAll(".task");
-  const tasksId = document.querySelectorAll(".task > div > .task-id");
-  const tasksButtons = document.querySelectorAll(".task > div > button");
-
-  for (let i = id - 1; i < tasks.length; i++) {
-    tasks[i].setAttribute("id", i + 1);
-    tasksId[i].innerHTML = `${i + 1}.`;
-    tasksButtons[i].setAttribute("onclick", `removeTask(${i + 1})`);
-  }
-  console.log("Tasks Ids get updated.");
+const isScrolledToBottom = () => {
+  const { scrollHeight, clientHeight, scrollTop } = document.documentElement;
+  return scrollHeight - (clientHeight + scrollTop) < 1;
 };
 
-const removeAnimation = (id) => {
-  const tasks = document.querySelectorAll(".task");
-  for (let i = id - 1; i < tasks.length; i++) {
-    tasks[i].classList.add("animate-bottom");
+const scrollbarPosition = () => {
+  return window.scrollY;
+};
 
+const isScrollbarVisible = () => {
+  return Boolean(window.scrollY);
+};
+
+const playRemoveTaskAnimation = (id) => {
+  const tasks = document.querySelectorAll(".task");
+  let index;
+  let condition;
+  let animation;
+
+  if (isScrollbarVisible() && isScrolledToBottom()) {
+    index = 0;
+    condition = id - 1;
+    animation = "animate-top";
+  } else {
+    index = id - 1;
+    condition = tasks.length;
+    animation = "animate-bottom";
+  }
+
+  for (let i = index; i < condition; i++) {
+    tasks[i].classList.add(animation);
+
+    tasks[i].addEventListener(
+      "animationend",
+      () => {
+        tasks[i].classList.remove(animation);
+      },
+      { once: true }
+    );
+  }
+};
+
+const playAddTaskAnimation = () => {
+  const tasks = document.querySelectorAll(".task");
+  const len = tasks.length;
+  const index = isScrollbarVisible() ? 0 : len - 1;
+
+  for (let i = index; i < len - 1; i++) {
+    tasks[i].classList.add("animate-bottom");
     tasks[i].addEventListener(
       "animationend",
       () => {
@@ -26,32 +57,48 @@ const removeAnimation = (id) => {
       { once: true }
     );
   }
+
+  tasks[len - 1].classList.add("animate-bottom-show");
+  tasks[len - 1].addEventListener(
+    "animationend",
+    () => {
+      tasks[len - 1].classList.remove("animate-bottom-show");
+    },
+    { once: true }
+  );
+};
+
+const updateTasksId = (id) => {
+  const tasksId = document.querySelectorAll(".task-id");
+
+  for (let i = id - 1; i < tasksId.length; i++) {
+    tasksId[i].innerHTML = `${i + 1}.`;
+    tasksId[i].parentElement.parentElement.setAttribute("id", i + 1);
+  }
 };
 
 const saveTasks = () => {
-  const content = document.querySelector(".content");
+  const content = document.getElementById("content");
   ipcRenderer.send("write", content.innerHTML);
-  console.log("Overwrite request is sent.");
 };
 
-const removeTask = (id) => {
-  const task = document.getElementById(id);
-  task.remove();
-  updateIds(id);
+const removeTask = (element) => {
+  const taskId = element.id;
+  element.remove();
+  updateTasksId(taskId);
   saveTasks();
-  removeAnimation(id);
+  playRemoveTaskAnimation(taskId);
   taskCount--;
 };
 
 window.addEventListener("DOMContentLoaded", () => {
   const form = document.querySelector("form");
   const input = document.querySelector("input");
-  const content = document.querySelector(".content");
+  const content = document.getElementById("content");
 
-  ipcRenderer.on("read", (e, data) => {
+  ipcRenderer.on("tasks", (e, data) => {
     content.innerHTML = data;
     taskCount = document.querySelectorAll(".task").length;
-    console.log("Tasks showed.");
   });
 
   form.addEventListener("submit", (e) => {
@@ -60,30 +107,18 @@ window.addEventListener("DOMContentLoaded", () => {
     const task = input.value;
     input.value = "";
 
-    content.innerHTML += `
-      <div id="${taskCount}" class="task">
-        <div class="task-title">
-          <h2 class="task-id">${taskCount}.</h2>
-          <h2 class="task-name" contenteditable onblur="saveTasks()">${task}</h2>
-        </div>
-        <div>
-          <button class="done-btn" onclick="removeTask(${taskCount})"></button>
-        </div>
-      </div>`;
+    content.innerHTML += `<div id="${taskCount}" class="task">
+<div class="task-title">
+<h2 class="task-id">${taskCount}.</h2>
+<h2 class="task-name" contenteditable onblur="saveTasks()">${task}</h2>
+</div>
+<div>
+<button class="done-btn" onclick="removeTask(this.parentElement.parentElement)"></button>
+</div>
+</div>`;
 
     ipcRenderer.send("write", content.innerHTML);
-    console.log("Add request is sent.");
-
     window.scrollBy(0, 500);
-
-    const animatedTask = document.getElementById(taskCount);
-    animatedTask.classList.add("animate-bottom-show");
-    animatedTask.addEventListener(
-      "animationend",
-      () => {
-        animatedTask.classList.remove("animate-bottom-show");
-      },
-      { once: true }
-    );
+    playAddTaskAnimation();
   });
 });
